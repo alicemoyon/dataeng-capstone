@@ -285,8 +285,6 @@ def main():
     spark.stop()  # ensures the application isn't left hanging at the end of the batch spark job
 
     host, arn = launch_redshift_cluster()
-    # host = "dwhcluster2.ckbqb5g8ifko.eu-west-1.redshift.amazonaws.com"
-    # arn = "arn:aws:iam::618534798858:role/dwhRole"
     # Connect to the Redshift database cluster
     conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(host,
                                                                                    config.get("DWH", "DWH_DB"),
