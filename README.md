@@ -2,8 +2,8 @@
 
 ## Project Summary
 
-The goal of this project was to create a data pipeline to clean, process and enrich data from reviews of US 
-businesses on Google Local and make it available for analysis by two different teams:
+The goal of this project was to create an ETL data pipeline to clean, process and enrich data from Google Local reviews 
+of US-based businesses on Google Local and make it available for analysis by two different teams:
 - a team of data scientists working on a Machine Learning model to cover a wide range of business categories.
 - a team of data analysts that will perform an exploratory analysis of restaurant reviews for a business client who 
   owns a US-based Italian restaurant chain.
@@ -19,11 +19,13 @@ businesses on Google Local and make it available for analysis by two different t
 ## Data & Code
 
 3 input files are used for this project:
-**places.json** and **reviews.json** - please download from https://cseweb.ucsd.edu/~jmcauley/datasets.
+- **places.json** and **reviews.json** - please download from https://cseweb.ucsd.edu/~jmcauley/datasets.
 html#google_local
-**us_population_by_zip_code.csv** - included in this project folder (obtained from https://blog.splitwise.
+
+- **us_population_by_zip_code.csv** - included in this project folder (obtained from https://blog.splitwise.
 com/2013/09/18/the-2010-us-census-population-by-zip-code-totally-free/)
 
+Code:
 - **main-pipeline.py** - main script to execute the full data pipeline using Spark then AWS Redshift.
 - **launch_redshift_cluster.py** - script called from the main pipeline script to create and launch a Redshift cluster 
   in order to create a database in Redshift. Includes the creation of an IAM Role with necessary policy attached to .
@@ -117,22 +119,22 @@ i.e. it is likely that a different model would be developed for each category, o
 
 #### Reviews Data Lake - data dictionary
 
-**category** - business category (e.g. Restaurant, Café, Museum...) - partitioning column
-**gPlusPlaceId** - unique identifier for each Google Local business
-**day_nigh**t - two possible values: "day" or "night", whether the review was submitted 8am-6pm or 6pm-8am
-**gPlusUserId** - unique identifier for each Google Local user
-**rating** - the rating assigned by the user for the review representing a number of stars 0-5
-**reviewTime** - timestamp indicating when the review was submitted
-**reviewText** - full text review written by the user
-**userAvgRating** - average rating given by the reviewer (across all their other reviews)
-**weekday** - day of the week that the review was submitted
-**address** - address of the business
-**country** - country of the business (USA only here)
-**name** - name of the business
-**population** - number of people living in the business locality (at postcode level)
-**postcode** - postcode of the business
-**price** - 0-5 rating of the price level of the business (not assigned by user, this is unique per business)
-**state** - US state the business is located in (extracted from address)
+**category** - business category (e.g. Restaurant, Café, Museum...) - partitioning column</br>
+**gPlusPlaceId** - unique identifier for each Google Local business</br>
+**day_night** - two possible values: "day" or "night", whether the review was submitted 8am-6pm or 6pm-8am</br>
+**gPlusUserId** - unique identifier for each Google Local user</br>
+**rating** - the rating assigned by the user for the review representing a number of stars 0-5</br>
+**reviewTime** - timestamp indicating when the review was submitted</br>
+**reviewText** - full text review written by the user</br>
+**userAvgRating** - average rating given by the reviewer (across all their other reviews)</br>
+**weekday** - day of the week that the review was submitted</br>
+**address** - address of the business</br>
+**country** - country of the business (USA only here)</br>
+**name** - name of the business</br>
+**population** - number of people living in the business locality (at postcode level)</br>
+**postcode** - postcode of the business</br>
+**price** - 0-5 rating of the price level of the business (not assigned by user, this is unique per business)</br>
+**state** - US state the business is located in (extracted from address)</br>
 
 In parallel to the Data Lake above, a temporary staging data lake was created without column partitioning. This 
 was a necessary step as the COPY command to load the data into a Redshift Data Warehouse cannot otherwise include the 
