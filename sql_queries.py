@@ -99,6 +99,8 @@ reviews_table_insert = ("""INSERT INTO reviews (gPlusPlaceId, gPlusUserId, categ
 
 # Data quality checks
 sql_check_filled = "SELECT COUNT(*) FROM public.{}"
+sql_check_unique_1 = "SELECT COUNT({}) FROM public.{}"
+sql_check_unique_2 = "SELECT COUNT(DISTINCT {}) FROM public.{}"
 
 # Query lists
 create_table_queries = [users_table_create, places_table_create, population_table_create, reviews_table_create]

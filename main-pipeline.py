@@ -9,7 +9,8 @@ import os
 import re
 from launch_redshift_cluster import launch_redshift_cluster
 from sql_queries import drop_table_queries, create_table_queries, insert_table_queries, staging_table_copy, \
-    staging_table_drop, staging_table_create, staging_table_filter, sql_check_filled
+    staging_table_drop, staging_table_create, staging_table_filter, sql_check_filled, sql_check_unique_1, \
+    sql_check_unique_2
 
 # Set the AWS environment variables (for S3 access)
 config = configparser.ConfigParser()
@@ -230,7 +231,7 @@ def load_final_tables(cur, conn):
             print(err)
 
 
-def check_data_quality(cur, tables):
+def check_data_quality(cur, tables, table_keys):
     """ Takes a list of table names as input and checks that they are not empty """
     # Check for empty tables
     for table in tables:
@@ -240,6 +241,16 @@ def check_data_quality(cur, tables):
             raise ValueError(f"Data quality check failed. Table {table} is empty")
         else:
             print(f"Data quality check passed, {table} is filled")
+    # Check that key columns are unique where required
+    for table, key in table_keys:
+        cur.execute(sql_check_unique_1.format(key, table))
+        rows_all = cur.fetchall()
+        cur.execute(sql_check_unique_2.format(key, table))
+        rows_distinct = cur.fetchall()
+        if rows_all[0][0] != rows_distinct[0][0]:
+            raise ValueError(f"Data quality check failed. Column {key} in {table} is not unique")
+        else:
+            print(f"Data quality check passed, Column {key} in {table} is unique")
 
 
 def drop_staging_table(cur, conn):
@@ -279,11 +290,14 @@ def main():
      - clears the temporary files and data lake
      """
     spark = create_spark_session()
+    # Extract and transform places and reviews data
     process_places(spark)
     process_reviews(spark)
+    # Load data lakes
     create_data_lake(spark)
     spark.stop()  # ensures the application isn't left hanging at the end of the batch spark job
 
+    # Launch Redshift cluster & retrieve cluster credentials
     host, arn = launch_redshift_cluster()
     # Connect to the Redshift database cluster
     conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(host,
@@ -297,7 +311,8 @@ def main():
     load_staging_table(cur, conn, arn)
     load_final_tables(cur, conn)
     tables = ["reviews", "places", "population", "users"]
-    check_data_quality(cur, tables)
+    table_keys = [("places", "gPlusPlaceId"), ("population", "postcode"), ("users", "gPlusUserId")]
+    check_data_quality(cur, tables, table_keys)
     drop_staging_table(cur, conn)
     clear_temp_data()
 
