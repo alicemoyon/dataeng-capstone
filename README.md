@@ -12,7 +12,7 @@ of US-based businesses on Google Local and make it available for analysis by two
 
 - AWS key & secret 
   
-- AWS key-pair (.pem file)
+- AWS EC2 key pair (.pem file)
 
 - S3 Bucket
 
@@ -117,7 +117,7 @@ The datasets were then combined into a large Data Lake containing all the review
 by business category. This column was chosen for partitioning as it's a likely candidate for aggregation in an ML model 
 i.e. it is likely that a different model would be developed for each category, or group of categories.
 
-#### Reviews Data Lake - data dictionary
+#### Reviews Data Lake - data model
 
 **category** - business category (e.g. Restaurant, Café, Museum...) - partitioning column</br>
 **gPlusPlaceId** - unique identifier for each Google Local business</br>
@@ -168,6 +168,26 @@ schema.
   referenced by the `reviews` table.
 - The `population` table is distributed by postcode, to allow efficient joining with the `places` table.
 
+#### Project Data Dictionary
+
+| Field Name | Data Type | Description | Example |
+| :--------- | :-------- | :---------- | :------ |
+| gPlusPlaceId | String | Unique identifier for each Google Local business | "103054478949000078829" |
+| gPlusUserId | String | Unique identifier for Google Local user/reviewer | "100004578649040078529" |
+| category | String | Business category of the business being reviewed | "Restaurant", "Museum", ... |
+| rating | Decimal | Rating assigned by the user for the review representing a number of stars 0-5 | 5.0 |
+| price | Integer | Indicates the general price level of the business
+| reviewTime | Timestamp | Indicates when the review was submitted by the user (day and time) | '2011-01-07T18:18:39.000Z' |
+| reviewText | String | Freeform text review of the business | "Excellent service and delicious food" |
+| weekday | String | Day of the week the review was submitted | "Fri" |
+| day_night | String | Flag indicating the part of the day the review was submitted. two possible values: "day" or "night", whether the review was submitted 8am-6pm or 6pm-8am | "day", "night" |
+| userAvgRating | Decimal | Average rating assigned by the user across all their reviews | 4.3 |
+| name | String | Name of the business reviewed | "The Olive Garden" |
+| address | String | Address of the business reviewed | "1024 Santa Clara Drive, CA 90210" |
+| country | String | Country where the business is located | "USA" |
+| state | String | Two-letter code indicating the state where the business is located | "CA" |
+| postcode | String | 5-digit zipcode where business is located | "90210" |
+| population | Decimal | Population (no. of people) of postcode area | 12000.0 |
 
 ### Adapting the pipeline design to different scenarios
 
