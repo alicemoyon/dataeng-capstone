@@ -22,7 +22,7 @@ of US-based businesses on Google Local and make it available for analysis by two
 - **places.json** and **reviews.json** - please download from https://cseweb.ucsd.edu/~jmcauley/datasets.
 html#google_local
 
-- **us_population_by_zip_code.csv** - included in this project folder (obtained from https://blog.splitwise.
+- **us_population_by_zipcode.csv** - included in this project folder (obtained from https://blog.splitwise.
 com/2013/09/18/the-2010-us-census-population-by-zip-code-totally-free/)
 
 Code:
